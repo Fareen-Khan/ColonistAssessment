@@ -1,4 +1,5 @@
 import UserList from "./components/UserList"
+import { registerRootComponent } from "expo"
 import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context"
 
 
@@ -11,3 +12,4 @@ export default function App() {
 		</SafeAreaProvider>
 	)
 }
+registerRootComponent(App)

@@ -10,7 +10,7 @@ import {
 	Platform,
 } from "react-native"
 import { fetchUsers, User } from "../services/api"
-import { pagination } from "../hooks/pagination"
+import { Pagination } from "../hooks/pagination"
 
 const UserList = () => {
 	const [users, setUsers] = useState<User[]>([])
@@ -49,7 +49,7 @@ const UserList = () => {
 		paginatedUsers,
 		goToNextPage,
 		goToPreviousPage,
-	} = pagination(usersByCountry)
+	} = Pagination(usersByCountry)
 
 	return (
 		<KeyboardAvoidingView
@@ -57,6 +57,13 @@ const UserList = () => {
 			behavior={Platform.OS === "ios" ? "padding" : "height"}
 		>
 			<View style={styles.listBox}>
+				<Text style={styles.title}>Users</Text>
+				<View
+					style={{
+						borderBottomColor: "black",
+						borderBottomWidth: StyleSheet.hairlineWidth,
+					}}
+				/>
 				{/* User List */}
 				<FlatList
 					data={paginatedUsers}
@@ -74,13 +81,17 @@ const UserList = () => {
 					)}
 				/>
 				{/* Pagination, Ordering and Filtering Buttons */}
-				<View style={{ marginBottom: 12 }}>
+				<View style={{ marginVertical: 12 }}>
 					{/* Sort By Date */}
-					<Button
-						onPress={sortUsersByDate}
-						title={`Sort by Date (${sortOrder.toUpperCase()})`}
-						color="#007bff"
-					/>
+					<View
+            style={styles.buttonBox}
+					>
+						<Button
+							onPress={sortUsersByDate}
+							title={`Sort by Date (${sortOrder.toUpperCase()})`}
+							color="#007bff"
+						/>
+					</View>
 					{/* Filter Country */}
 					<TextInput
 						value={selectedCountry}
@@ -97,7 +108,7 @@ const UserList = () => {
 						color="#007bff"
 						disabled={currentPage === 1}
 					/>
-					<Text>
+					<Text style={styles.pages}>
 						{currentPage} / {totalPages}
 					</Text>
 					<Button
@@ -115,6 +126,12 @@ const UserList = () => {
 export default UserList
 
 const styles = StyleSheet.create({
+	title: {
+		padding: 12,
+		fontSize: 32,
+		fontWeight: "bold",
+		color: "#333",
+	},
 	username: { fontSize: 16, fontWeight: "bold", color: "#333" },
 	date: { fontSize: 14, color: "#666" },
 	userBox: {
@@ -146,4 +163,11 @@ const styles = StyleSheet.create({
 		flexDirection: "row",
 		justifyContent: "space-between",
 	},
+	pages: {
+		marginTop: 10,
+		fontSize: 16,
+		fontWeight: "normal",
+		color: "#333",
+	},
+	buttonBox: { borderWidth: 1, borderColor: "#ccc", borderRadius: 10 },
 })
