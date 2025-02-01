@@ -5,9 +5,9 @@ import {
 	FlatList,
 	StyleSheet,
 	Button,
-  TextInput,
-  KeyboardAvoidingView,
-  Platform
+	TextInput,
+	KeyboardAvoidingView,
+	Platform,
 } from "react-native"
 import { fetchUsers, User } from "../services/api"
 import { pagination } from "../hooks/pagination"
@@ -63,7 +63,12 @@ const UserList = () => {
 					keyExtractor={(item) => item.id}
 					renderItem={({ item }: { item: User }) => (
 						<View style={styles.userBox}>
-							<Text style={styles.username}>{item.userName}</Text>
+							<View
+								style={styles.inLineBox}
+							>
+								<Text style={styles.username}>{item.userName}</Text>
+								<Text style={styles.username}>{item.country}</Text>
+							</View>
 							<Text style={styles.date}>
 								{new Date(item.createdAt).toDateString()}
 							</Text>
@@ -71,22 +76,22 @@ const UserList = () => {
 					)}
 				/>
 				{/* Pagination, Ordering and Filtering Buttons */}
-        <View style={{ marginBottom: 12 }}>
-          {/* Sort By Date */}
+				<View style={{ marginBottom: 12 }}>
+					{/* Sort By Date */}
 					<Button
 						onPress={sortUsersByDate}
 						title={`Sort by Date (${sortOrder.toUpperCase()})`}
 						color="#007bff"
-          />
-          {/* Filter Country */}
+					/>
+					{/* Filter Country */}
 					<TextInput
 						value={selectedCountry}
 						placeholder="Filter by Country"
 						onChangeText={(text) => setselectedCountry(text.toUpperCase())}
 						style={styles.inputBox}
 					/>
-        </View>
-        {/* Pagination */}
+				</View>
+				{/* Pagination */}
 				<View style={styles.controlsBox}>
 					<Button
 						title="Previous"
@@ -137,4 +142,9 @@ const styles = StyleSheet.create({
 		marginTop: 16,
 	},
 	listBox: { flex: 1, padding: 16, backgroundColor: "#f8f9fa" },
+	inLineBox: {
+		flex: 1,
+		flexDirection: "row",
+		justifyContent: "space-between",
+	},
 })
