@@ -63,9 +63,7 @@ const UserList = () => {
 					keyExtractor={(item) => item.id}
 					renderItem={({ item }: { item: User }) => (
 						<View style={styles.userBox}>
-							<View
-								style={styles.inLineBox}
-							>
+							<View style={styles.inLineBox}>
 								<Text style={styles.username}>{item.userName}</Text>
 								<Text style={styles.username}>{item.country}</Text>
 							</View>
@@ -121,11 +119,11 @@ const styles = StyleSheet.create({
 	date: { fontSize: 14, color: "#666" },
 	userBox: {
 		padding: 12,
-		backgroundColor: "#fff",
+		backgroundColor: "#FBFBFB",
 		borderRadius: 8,
-		marginBottom: 8,
+		margin: 8,
 		shadowColor: "#000",
-		shadowOpacity: 0.1,
+		shadowOpacity: 0.3,
 		shadowOffset: { width: 0, height: 1 },
 		shadowRadius: 3,
 		elevation: 2,
@@ -135,13 +133,14 @@ const styles = StyleSheet.create({
 		borderColor: "#ccc",
 		padding: 10,
 		borderRadius: 10,
+		marginTop: 5,
 	},
 	controlsBox: {
 		flexDirection: "row",
 		justifyContent: "space-between",
 		marginTop: 16,
 	},
-	listBox: { flex: 1, padding: 16, backgroundColor: "#f8f9fa" },
+	listBox: { flex: 1, padding: 16, backgroundColor: "#FBFBFB" },
 	inLineBox: {
 		flex: 1,
 		flexDirection: "row",
