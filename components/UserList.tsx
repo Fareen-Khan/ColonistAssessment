@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react"
-import { View, Text, FlatList, StyleSheet, Button } from "react-native"
+import { View, Text, FlatList, StyleSheet, Button, TextInput } from "react-native"
 import { fetchUsers, User } from "../services/api"
 
 const UserList = () => {
 	const [users, setUsers] = useState<User[]>([])
 	const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc")
+	const [selectedCountry, setselectedCountry] = useState("")
 
 	useEffect(() => {
 		loadUsers()
@@ -27,11 +28,16 @@ const UserList = () => {
 		)
 	}
 
+	const usersByCountry =
+		selectedCountry === ""
+			? users
+			: users.filter((user) => user.country === selectedCountry)
+
 	return (
 		<View style={{ flex: 1, padding: 16, backgroundColor: "#f8f9fa" }}>
 			{/* User List */}
 			<FlatList
-				data={users}
+				data={usersByCountry}
 				keyExtractor={(item) => item.id}
 				renderItem={({ item }: { item: User }) => (
 					<View style={styles.userBox}>
@@ -48,8 +54,14 @@ const UserList = () => {
 				<Button
 					onPress={sortUsersByDate}
 					title={`Sort by Date (${sortOrder.toUpperCase()})`}
-          color="#007bff"
-				/>
+					color="#007bff"
+        />
+        <TextInput
+          value={selectedCountry}
+          placeholder="Filter by Country"
+          onChangeText={(text) => setselectedCountry(text.toUpperCase())}
+          style={styles.inputBox}
+        />
 			</View>
 		</View>
 	)
@@ -70,5 +82,11 @@ const styles = StyleSheet.create({
 		shadowOffset: { width: 0, height: 1 },
 		shadowRadius: 3,
 		elevation: 2,
+	},
+  inputBox: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    padding: 10,
+    borderRadius: 10,
 	},
 })
