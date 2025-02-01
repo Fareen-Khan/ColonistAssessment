@@ -1,6 +1,16 @@
 import { useEffect, useState } from "react"
-import { View, Text, FlatList, StyleSheet, Button, TextInput } from "react-native"
+import {
+	View,
+	Text,
+	FlatList,
+	StyleSheet,
+	Button,
+  TextInput,
+  KeyboardAvoidingView,
+  Platform
+} from "react-native"
 import { fetchUsers, User } from "../services/api"
+import { pagination } from "../hooks/pagination"
 
 const UserList = () => {
 	const [users, setUsers] = useState<User[]>([])
@@ -33,37 +43,69 @@ const UserList = () => {
 			? users
 			: users.filter((user) => user.country === selectedCountry)
 
-	return (
-		<View style={{ flex: 1, padding: 16, backgroundColor: "#f8f9fa" }}>
-			{/* User List */}
-			<FlatList
-				data={usersByCountry}
-				keyExtractor={(item) => item.id}
-				renderItem={({ item }: { item: User }) => (
-					<View style={styles.userBox}>
-						<Text style={styles.username}>{item.userName}</Text>
-						<Text style={styles.date}>
-							{new Date(item.createdAt).toDateString()}
-						</Text>
-					</View>
-				)}
-			/>
+	const {
+		currentPage,
+		totalPages,
+		paginatedUsers,
+		goToNextPage,
+		goToPreviousPage,
+	} = pagination(usersByCountry)
 
-			{/* Pagination, Ordering and Filtering Buttons */}
-			<View style={{ marginBottom: 12 }}>
-				<Button
-					onPress={sortUsersByDate}
-					title={`Sort by Date (${sortOrder.toUpperCase()})`}
-					color="#007bff"
-        />
-        <TextInput
-          value={selectedCountry}
-          placeholder="Filter by Country"
-          onChangeText={(text) => setselectedCountry(text.toUpperCase())}
-          style={styles.inputBox}
-        />
+	return (
+		<KeyboardAvoidingView
+			style={{ flex: 1 }}
+			behavior={Platform.OS === "ios" ? "padding" : "height"}
+		>
+			<View style={styles.listBox}>
+				{/* User List */}
+				<FlatList
+					data={paginatedUsers}
+					keyExtractor={(item) => item.id}
+					renderItem={({ item }: { item: User }) => (
+						<View style={styles.userBox}>
+							<Text style={styles.username}>{item.userName}</Text>
+							<Text style={styles.date}>
+								{new Date(item.createdAt).toDateString()}
+							</Text>
+						</View>
+					)}
+				/>
+				{/* Pagination, Ordering and Filtering Buttons */}
+        <View style={{ marginBottom: 12 }}>
+          {/* Sort By Date */}
+					<Button
+						onPress={sortUsersByDate}
+						title={`Sort by Date (${sortOrder.toUpperCase()})`}
+						color="#007bff"
+          />
+          {/* Filter Country */}
+					<TextInput
+						value={selectedCountry}
+						placeholder="Filter by Country"
+						onChangeText={(text) => setselectedCountry(text.toUpperCase())}
+						style={styles.inputBox}
+					/>
+        </View>
+        {/* Pagination */}
+				<View style={styles.controlsBox}>
+					<Button
+						title="Previous"
+						onPress={goToPreviousPage}
+						color="#007bff"
+						disabled={currentPage === 1}
+					/>
+					<Text>
+						{currentPage} / {totalPages}
+					</Text>
+					<Button
+						title="Next"
+						onPress={goToNextPage}
+						color="#007bff"
+						disabled={currentPage === totalPages}
+					/>
+				</View>
 			</View>
-		</View>
+		</KeyboardAvoidingView>
 	)
 }
 
@@ -83,10 +125,16 @@ const styles = StyleSheet.create({
 		shadowRadius: 3,
 		elevation: 2,
 	},
-  inputBox: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    padding: 10,
-    borderRadius: 10,
+	inputBox: {
+		borderWidth: 1,
+		borderColor: "#ccc",
+		padding: 10,
+		borderRadius: 10,
 	},
+	controlsBox: {
+		flexDirection: "row",
+		justifyContent: "space-between",
+		marginTop: 16,
+	},
+	listBox: { flex: 1, padding: 16, backgroundColor: "#f8f9fa" },
 })
